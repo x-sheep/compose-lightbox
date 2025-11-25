@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Zamknij</string>
+    <string name="previous">Poprzedni</string>
+    <string name="next">Następny</string>
+</resources>

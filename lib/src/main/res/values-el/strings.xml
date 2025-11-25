@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Κλείσιμο</string>
+    <string name="previous">Προηγούμενο</string>
+    <string name="next">Επόμενο</string>
+</resources>

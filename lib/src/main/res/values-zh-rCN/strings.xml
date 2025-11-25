@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">关闭</string>
+    <string name="previous">上一个</string>
+    <string name="next">下一个</string>
+</resources>

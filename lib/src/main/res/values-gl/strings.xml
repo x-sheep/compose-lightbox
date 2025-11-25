@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Pechar</string>
+    <string name="previous">Anterior</string>
+    <string name="next">Seguinte</string>
+</resources>

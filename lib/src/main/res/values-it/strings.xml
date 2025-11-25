@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Chiudi</string>
+    <string name="previous">Precedente</string>
+    <string name="next">Successivo</string>
+</resources>

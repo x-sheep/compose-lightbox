@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Kapat</string>
+    <string name="previous">Önceki</string>
+    <string name="next">Sonraki</string>
+</resources>

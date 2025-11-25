@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="close">Aizvērt</string>
+    <string name="previous">Iepriekšējais</string>
+    <string name="next">Nākamais</string>
+</resources>
