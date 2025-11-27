@@ -15,7 +15,7 @@ Make sure Jitpack is added to the list of package repositories in `settings.grad
 ```groovy
 dependencyResolutionManagement {
   repositories {
-    // other repositories
+    ... // other repositories
     maven { url 'https://jitpack.io' }
   }
 }
@@ -24,8 +24,8 @@ dependencyResolutionManagement {
 Then add the dependency to the `build.gradle` of your app:
 ```groovy
 dependencies {
-  // other dependencies
-  implementation 'com.github.x-sheep:compose-lightbox:0.1'
+  ... // other dependencies
+  implementation 'com.github.x-sheep:compose-lightbox:0.1.1'
 }
 ```
 
@@ -39,6 +39,8 @@ dependencies {
 
 Simple example:
 ```kotlin
+import io.github.xsheep.composelightbox.*
+
 @Composable
 fun Gallery() {
   LightboxHost {
