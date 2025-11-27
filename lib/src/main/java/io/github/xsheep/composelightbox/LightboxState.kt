@@ -333,9 +333,8 @@ class LightboxState internal constructor() : Parcelable {
             }
 
             dismissGestureProgress.snapTo(0f)
-            // TODO try to handle current scale value
-            val limitX = imageWidthPx * 0.4f
-            val limitY = imageHeightPx * 0.4f
+            val limitX = imageWidthPx * 0.5f
+            val limitY = imageHeightPx * 0.5f
 
             if(abs(targetPan.x) > limitX || abs(targetPan.y) > limitY) {
                 val clamped = Offset(
