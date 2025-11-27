@@ -5,6 +5,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -34,19 +37,21 @@ import androidx.compose.ui.unit.dp
 @ExperimentalLightboxApi
 fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
     CompositionLocalProvider(LocalContentColor provides Color.White) {
+        val dir = LocalLayoutDirection.current
+
         AnimatedVisibility(
             state.hudVisible && state.open,
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-            ) {
-                IconButton(onClick = {
-                    state.close()
-                }, Modifier.align(Alignment.TopStart)) {
+            Box(Modifier.fillMaxSize()) {
+                IconButton(
+                    onClick = {
+                        state.close()
+                    }, Modifier
+                        .align(Alignment.TopStart)
+                        .padding(padding)
+                ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.close),
                         stringResource(R.string.close),
@@ -57,27 +62,37 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                 }
 
                 if (state.hasPrevious) {
-                    IconButton(onClick = {
-                        state.goPrevious()
-                    }, Modifier.align(Alignment.CenterStart)) {
+                    IconButton(
+                        onClick = {
+                            state.goPrevious()
+                        }, Modifier
+                            .align(Alignment.CenterStart)
+                            .padding(
+                                start = padding.calculateStartPadding(dir)
+                            )
+                    ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.backward),
                             stringResource(R.string.previous),
-                            Modifier
-                                .size(48.dp)
+                            Modifier.size(48.dp)
                         )
                     }
                 }
 
                 if (state.hasNext) {
-                    IconButton(onClick = {
-                        state.goNext()
-                    }, Modifier.align(Alignment.CenterEnd)) {
+                    IconButton(
+                        onClick = {
+                            state.goNext()
+                        }, Modifier
+                            .align(Alignment.CenterEnd)
+                            .padding(
+                                end = padding.calculateEndPadding(dir)
+                            )
+                    ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.forward),
                             stringResource(R.string.next),
-                            Modifier
-                                .size(48.dp)
+                            Modifier.size(48.dp)
                         )
                     }
                 }
