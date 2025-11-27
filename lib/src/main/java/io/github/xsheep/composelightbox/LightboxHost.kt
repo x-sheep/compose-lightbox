@@ -56,7 +56,7 @@ import kotlin.math.sqrt
  *
  * This view should be placed before any Scaffold, to make sure the Lightbox fully overlaps all of your UI.
  *
- * @sample io.github.xsheep.composelightbox.samples.MainScreen
+ * @sample io.github.xsheep.composelightbox.snippets.MainScreen
  *
  * @param state The state of the Lightbox.
  */
@@ -74,7 +74,7 @@ fun LightboxHost(
  *
  * This view should be placed before any Scaffold, to make sure the Lightbox fully overlaps all of your UI.
  *
- * @sample io.github.xsheep.composelightbox.samples.MainScreen
+ * @sample io.github.xsheep.composelightbox.snippets.MainScreen
  *
  * @param state The state of the Lightbox.
  * @param overlay The view to draw on top of the Lightbox image.

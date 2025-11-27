@@ -25,7 +25,7 @@ import com.bumptech.glide.integration.compose.Placeholder
  *
  * This composable must have LightboxHost as a parent.
  *
- * @sample io.github.xsheep.composelightbox.samples.Gallery
+ * @sample io.github.xsheep.composelightbox.snippets.Gallery
  *
  * @param photoList The list of photos to present when pressed. May be empty.
  * @param photo The photo being displayed by this image. This must be a member of `photoList` if the list is not empty.
@@ -58,7 +58,7 @@ fun LightboxImage(
  *
  * This composable must have LightboxHost as a parent.
  *
- * @sample io.github.xsheep.composelightbox.samples.Gallery
+ * @sample io.github.xsheep.composelightbox.snippets.Gallery
  *
  * @param photoList The list of photos to present when pressed. May be empty.
  * @param photo The photo being displayed by this image. This must be a member of `photoList` if the list is not empty.

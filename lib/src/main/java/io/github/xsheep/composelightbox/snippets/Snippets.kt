@@ -1,7 +1,7 @@
 @file:Suppress("UNUSED_PARAMETER", "unused", "ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 @file:SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 
-package io.github.xsheep.composelightbox.samples
+package io.github.xsheep.composelightbox.snippets
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.lazy.LazyColumn
