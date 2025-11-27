@@ -66,7 +66,7 @@ fun LightboxHost(
     state: LightboxState = rememberLightboxState(),
     content: @Composable () -> Unit
 ) {
-    LightboxHost(state, DefaultLightboxOverlay, content)
+    LightboxHost(state, true, DefaultLightboxOverlay, content)
 }
 
 /**
@@ -84,6 +84,7 @@ fun LightboxHost(
 @ExperimentalLightboxApi
 fun LightboxHost(
     state: LightboxState = rememberLightboxState(),
+    hideSystemUI: Boolean = true,
     overlay: @Composable (LightboxState, PaddingValues) -> Unit,
     content: @Composable () -> Unit
 ) {
@@ -111,7 +112,7 @@ fun LightboxHost(
                     val placeable = measurable.measure(constraints)
                     state.boxWidthPx = placeable.width
                     state.boxHeightPx = placeable.height
-                    if(state.density != density) {
+                    if (state.density != density) {
                         state.density = density
                         state.decaySpec = splineBasedDecay(Density(density))
                     }
@@ -119,13 +120,14 @@ fun LightboxHost(
                         placeable.placeRelative(0, 0)
                     }
                 }) {
-            Box(Modifier
-                .fillMaxSize()
-                .semantics {
-                    if (state.open) {
-                        hideFromAccessibility()
-                    }
-                }) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .semantics {
+                        if (state.open) {
+                            hideFromAccessibility()
+                        }
+                    }) {
                 content()
             }
 
@@ -139,6 +141,8 @@ fun LightboxHost(
                     state.dismissGestureProgress.snapTo(0f)
                 }
             }
+
+            HideSystemUI(hideSystemUI && state.open)
 
             val currentPhoto = remember(state.photoList, state.currentIndex) {
                 state.photoList?.getOrNull(state.currentIndex)
