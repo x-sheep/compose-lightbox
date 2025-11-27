@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.mandatorySystemGestures
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -142,7 +142,7 @@ fun LightboxHost(
                 }
             }
 
-            HideSystemUI(hideSystemUI && state.open)
+            HideSystemUI(hideSystemUI && state.open && !state.hudVisible)
 
             val currentPhoto = remember(state.photoList, state.currentIndex) {
                 state.photoList?.getOrNull(state.currentIndex)
@@ -287,7 +287,7 @@ fun LightboxHost(
                 )
             }
 
-            val insets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
+            val insets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout)
             overlay(state, insets.asPaddingValues())
         }
     }
