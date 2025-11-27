@@ -142,7 +142,7 @@ fun LightboxHost(
                 }
             }
 
-            HideSystemUI(hideSystemUI && state.open && !state.hudVisible)
+            HideSystemUI(hideSystemUI && state.open)
 
             val currentPhoto = remember(state.photoList, state.currentIndex) {
                 state.photoList?.getOrNull(state.currentIndex)
