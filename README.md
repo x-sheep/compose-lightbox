@@ -25,7 +25,7 @@ Then add the dependency to the `build.gradle` of your app:
 ```groovy
 dependencies {
   ... // other dependencies
-  implementation 'com.github.x-sheep:compose-lightbox:0.1.1'
+  implementation 'com.github.x-sheep:compose-lightbox:0.1.2'
 }
 ```
 
