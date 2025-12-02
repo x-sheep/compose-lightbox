@@ -51,6 +51,7 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                     }, Modifier
                         .align(Alignment.TopStart)
                         .padding(padding)
+                        .padding(start = 4.dp, top = 4.dp)
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.close),
@@ -69,7 +70,7 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                             .align(Alignment.CenterStart)
                             .padding(
                                 start = padding.calculateStartPadding(dir)
-                            )
+                            ).padding(start = 4.dp)
                     ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.backward),
@@ -87,7 +88,7 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                             .align(Alignment.CenterEnd)
                             .padding(
                                 end = padding.calculateEndPadding(dir)
-                            )
+                            ).padding(end = 4.dp)
                     ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.forward),
