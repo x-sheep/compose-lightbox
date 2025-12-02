@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.mandatorySystemGestures
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -120,9 +121,13 @@ fun LightboxHost(
                         placeable.placeRelative(0, 0)
                     }
                 }) {
+
+            val insets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout)
+
             Box(
                 Modifier
                     .fillMaxSize()
+                    .windowInsetsPadding(if (hideSystemUI) insets else WindowInsets())
                     .semantics {
                         if (state.open) {
                             hideFromAccessibility()
@@ -287,7 +292,6 @@ fun LightboxHost(
                 )
             }
 
-            val insets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout)
             overlay(state, insets.asPaddingValues())
         }
     }
