@@ -213,10 +213,10 @@ fun LightboxHost(
                                     Modifier
                                         .fillMaxSize()
                                         .blur(2.dp),
-                                    requestBuilderTransform = { it.priority(Priority.LOW) }
                                 )
                             }
-                        }
+                        }.takeIf { previousPhoto.useThumbnailWhenLoading && previousPhoto.thumbnail != null },
+                        requestBuilderTransform = { it.priority(Priority.LOW) }
                     )
                 }
 
@@ -240,10 +240,10 @@ fun LightboxHost(
                                     Modifier
                                         .fillMaxSize()
                                         .blur(2.dp),
-                                    requestBuilderTransform = { it.priority(Priority.NORMAL) }
                                 )
                             }
-                        }
+                        }.takeIf { nextPhoto.useThumbnailWhenLoading && nextPhoto.thumbnail != null },
+                        requestBuilderTransform = { it.priority(Priority.NORMAL) }
                     )
                 }
 
@@ -280,11 +280,14 @@ fun LightboxHost(
                                 currentPhoto.contentDescription,
                                 Modifier
                                     .fillMaxSize()
-                                    .blur(2.dp)
+                                    .blur(2.dp),
                             )
-                            // TODO add progress indicator if this screen is here too long, otherwise don't
+                            /*
+                             * TODO a progress indicator could be shown here, but only if the image
+                             * isn't already loaded (otherwise flickering will occur)
+                             */
                         }
-                    },
+                    }.takeIf { currentPhoto.useThumbnailWhenLoading && currentPhoto.thumbnail != null },
                     requestBuilderTransform = {
                         it.priority(Priority.HIGH)
                             .addListener(SizeReader(currentPhoto))

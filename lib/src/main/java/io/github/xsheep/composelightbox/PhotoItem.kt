@@ -16,10 +16,19 @@ class PhotoItem : Parcelable {
 
     /** The url of the full-size image. */
     val url: String
+
     /** Alternate text for the image. */
     val contentDescription: String?
-    /** The url of the thumbnail, if it exists. */
+
+    /**
+     * The url of the thumbnail, if it exists.
+     *
+     * This is used by LightboxImage, and also as a loading placeholder when `useThumbnailWhenLoading` is true.
+     * */
     val thumbnail: String?
+
+    /** True if the thumbnail is displayed while loading the full image. */
+    val useThumbnailWhenLoading: Boolean
 
     /** @see Parcelable */
     override fun describeContents() = 0
@@ -29,6 +38,7 @@ class PhotoItem : Parcelable {
         dest.writeString(url)
         dest.writeString(contentDescription)
         dest.writeString(thumbnail)
+        dest.writeByte(if (useThumbnailWhenLoading) 1 else 0)
     }
 
     companion object {
@@ -38,6 +48,7 @@ class PhotoItem : Parcelable {
                 source.readString()!!,
                 source.readString(),
                 source.readString(),
+                source.readByte() == 1.toByte()
             )
 
             override fun newArray(size: Int): Array<out PhotoItem?> = arrayOfNulls(size)
@@ -50,12 +61,19 @@ class PhotoItem : Parcelable {
      * @param url The url of the full-size image.
      * @param contentDescription Alternate text for the image. May be null.
      * @param thumbnail The url of the thumbnail. May be null.
+     * @param useThumbnailWhenLoading True if the thumbnail is displayed while loading the full image.
      */
     @RememberInComposition
-    constructor(url: String, contentDescription: String?, thumbnail: String?) {
+    constructor(
+        url: String,
+        contentDescription: String?,
+        thumbnail: String?,
+        useThumbnailWhenLoading: Boolean = true
+    ) {
         this.url = url
         this.contentDescription = contentDescription
         this.thumbnail = thumbnail
+        this.useThumbnailWhenLoading = useThumbnailWhenLoading
     }
 
     /**
@@ -64,12 +82,19 @@ class PhotoItem : Parcelable {
      * @param url The url of the full-size image.
      * @param contentDescription Alternate text for the image. May be null.
      * @param thumbnail The url of the thumbnail. May be null.
+     * @param useThumbnailWhenLoading True if the thumbnail is displayed while loading the full image.
      */
     @RememberInComposition
-    constructor(url: Uri, contentDescription: String?, thumbnail: Uri?) : this(
+    constructor(
+        url: Uri,
+        contentDescription: String?,
+        thumbnail: Uri?,
+        useThumbnailWhenLoading: Boolean = true
+    ) : this(
         url.toString(),
         contentDescription,
-        thumbnail?.toString()
+        thumbnail?.toString(),
+        useThumbnailWhenLoading
     )
 
     /**
@@ -78,11 +103,18 @@ class PhotoItem : Parcelable {
      * @param url The url of the full-size image.
      * @param contentDescription Alternate text for the image. May be null.
      * @param thumbnail The url of the thumbnail. May be null.
+     * @param useThumbnailWhenLoading True if the thumbnail is displayed while loading the full image.
      */
     @RememberInComposition
-    constructor(url: URI, contentDescription: String?, thumbnail: URI?) : this(
+    constructor(
+        url: URI,
+        contentDescription: String?,
+        thumbnail: URI?,
+        useThumbnailWhenLoading: Boolean = true
+    ) : this(
         url.toString(),
         contentDescription,
-        thumbnail?.toString()
+        thumbnail?.toString(),
+        useThumbnailWhenLoading
     )
 }
