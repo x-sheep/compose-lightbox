@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -90,10 +91,9 @@ fun LightboxImage(
                 host.open(photo, photoList, bounds.takeIf { it.isFinite })
             }
             .onGloballyPositioned {
-                val root = it.findRootCoordinates()
-                val box = root.localBoundingBoxOf(it)
+                val box = it.boundsInWindow()
                 bounds = if (dir == LayoutDirection.Rtl) {
-                    val rootWidth = root.size.width
+                    val rootWidth = it.findRootCoordinates().size.width
                     box.copy(left = rootWidth - box.right, right = rootWidth - box.left)
                 } else box
             },
