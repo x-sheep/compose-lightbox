@@ -25,7 +25,7 @@ Then add the dependency to the `build.gradle` of your app:
 ```groovy
 dependencies {
   ... // other dependencies
-  implementation 'com.github.x-sheep:compose-lightbox:0.1.2'
+  implementation 'com.github.x-sheep:compose-lightbox:0.1.5'
 }
 ```
 
@@ -57,7 +57,11 @@ fun Gallery() {
     }
   }
 }
+```
 
+If your layout is changing size when the Lightbox opens and closes, you can try increasing the window insets used in your Scaffold:
+```kotlin
+Scaffold(contentWindowInsets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout))
 ```
 
 # License

@@ -127,7 +127,6 @@ fun LightboxHost(
             Box(
                 Modifier
                     .fillMaxSize()
-                    .windowInsetsPadding(if (hideSystemUI) insets else WindowInsets())
                     .semantics {
                         if (state.open) {
                             hideFromAccessibility()

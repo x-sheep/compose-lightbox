@@ -6,8 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.mandatorySystemGestures
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -40,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme(colorScheme) {
                 LightboxHost {
                     Scaffold(
+                        contentWindowInsets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout),
                         topBar = {
                             TopAppBar(title = {
                                 Text("Compose Lightbox sample")
