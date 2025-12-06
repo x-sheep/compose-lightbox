@@ -7,9 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.mandatorySystemGestures
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
@@ -43,12 +45,17 @@ class MainActivity : AppCompatActivity() {
 
             MaterialTheme(colorScheme) {
                 LightboxHost {
+                    val insets =
+                        WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout)
                     Scaffold(
-                        contentWindowInsets = WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout),
+                        contentWindowInsets = insets,
                         topBar = {
-                            TopAppBar(title = {
-                                Text("Compose Lightbox sample")
-                            })
+                            TopAppBar(
+                                title = {
+                                    Text("Compose Lightbox sample")
+                                },
+                                windowInsets = insets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                            )
                         }
                     ) { padding ->
                         val photoList = remember {
