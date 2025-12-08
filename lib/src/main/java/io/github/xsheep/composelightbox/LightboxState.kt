@@ -17,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.isFinite
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Velocity
@@ -74,6 +75,17 @@ class LightboxState internal constructor() : Parcelable {
 
     /** The index of the photo currently being presented. */
     var currentIndex by mutableIntStateOf(0); internal set
+
+    /**
+     * When a transition is in progress, this value is between the current index and the new index
+     * being navigated to. Otherwise this value is identical to `currentIndex`.
+     */
+    val currentIndexFraction: Float get() {
+        val frac = pan.value.x / boxWidthPx.toFloat()
+        return if (motionState == Motion.CHANGE && frac.isFinite())
+            currentIndex.toFloat() - frac
+        else currentIndex.toFloat()
+    }
 
     /** True if the lightbox is currently open. */
     var open by mutableStateOf(false); internal set
