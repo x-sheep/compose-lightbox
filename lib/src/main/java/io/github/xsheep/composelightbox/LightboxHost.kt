@@ -258,7 +258,13 @@ fun LightboxHost(
                             alpha = 1f - state.closingProgress.value
                         }
                         .customTransformable(transformState, state)
-                        .offset { state.pan.value.round() }
+                        .offset {
+                            if (state.isOverscrolling) {
+                                (state.pan.value / 2f).round()
+                            } else {
+                                state.pan.value.round()
+                            }
+                        }
                         .fillMaxSize()
                         .pointerInput(Unit) {
                             detectTapGestures(

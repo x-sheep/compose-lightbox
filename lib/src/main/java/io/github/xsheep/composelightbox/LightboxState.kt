@@ -17,7 +17,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.isFinite
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Velocity
@@ -85,6 +84,11 @@ class LightboxState internal constructor() : Parcelable {
         return if (motionState == Motion.CHANGE && frac.isFinite())
             currentIndex.toFloat() - frac
         else currentIndex.toFloat()
+    }
+
+    internal val isOverscrolling: Boolean get() {
+        if (motionState != Motion.CHANGE) return false
+        return (!hasPrevious && pan.value.x > 0) || (!hasNext && pan.value.x < 0)
     }
 
     /** True if the lightbox is currently open. */
