@@ -3,6 +3,7 @@ package io.github.xsheep.composelightbox
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationEndReason
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.calculateTargetValue
@@ -17,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.isFinite
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Velocity
@@ -79,17 +81,19 @@ class LightboxState internal constructor() : Parcelable {
      * When a transition is in progress, this value is between the current index and the new index
      * being navigated to. Otherwise this value is identical to `currentIndex`.
      */
-    val currentIndexFraction: Float get() {
-        val frac = pan.value.x / boxWidthPx.toFloat()
-        return if (motionState == Motion.CHANGE && frac.isFinite())
-            currentIndex.toFloat() - frac
-        else currentIndex.toFloat()
-    }
+    val currentIndexFraction: Float
+        get() {
+            val frac = pan.value.x / boxWidthPx.toFloat()
+            return if (motionState == Motion.CHANGE && frac.isFinite())
+                currentIndex.toFloat() - frac
+            else currentIndex.toFloat()
+        }
 
-    internal val isOverscrolling: Boolean get() {
-        if (motionState != Motion.CHANGE) return false
-        return (!hasPrevious && pan.value.x > 0) || (!hasNext && pan.value.x < 0)
-    }
+    internal val isOverscrolling: Boolean
+        get() {
+            if (motionState != Motion.CHANGE) return false
+            return (!hasPrevious && pan.value.x > 0) || (!hasNext && pan.value.x < 0)
+        }
 
     /** True if the lightbox is currently open. */
     var open by mutableStateOf(false); internal set
@@ -352,22 +356,23 @@ class LightboxState internal constructor() : Parcelable {
             val limitX = imageWidthPx * 0.5f
             val limitY = imageHeightPx * 0.5f
 
-            if(abs(targetPan.x) > limitX || abs(targetPan.y) > limitY) {
-                val clamped = Offset(
-                    targetPan.x.coerceIn(-limitX, limitX),
-                    targetPan.y.coerceIn(-limitY, limitY),
-                )
-                pan.animateTo(clamped, initialVelocity = velocityOffset)
-            } else {
-                pan.updateBounds(
-                    Offset(-limitX, -limitY),
-                    Offset(limitX, limitY),
-                )
-                try {
-                    pan.animateDecay(velocityOffset, decaySpec)
-                } finally {
-                    pan.updateBounds(null, null)
+            pan.updateBounds(
+                Offset(-limitX, -limitY),
+                Offset(limitX, limitY),
+            )
+            try {
+                val overshot = pan.animateDecay(velocityOffset, decaySpec)
+                if (overshot.endReason == AnimationEndReason.BoundReached && overshot.endState.velocity.isFinite) {
+                    if (abs(overshot.endState.value.x) == limitX) {
+                        val vertical = Offset(0f, overshot.endState.velocity.y)
+                        pan.animateDecay(vertical, decaySpec)
+                    } else if (abs(overshot.endState.value.y) == limitY) {
+                        val horizontal = Offset(overshot.endState.velocity.x, 0f)
+                        pan.animateDecay(horizontal, decaySpec)
+                    }
                 }
+            } finally {
+                pan.updateBounds(null, null)
             }
         }
         motionState = Motion.NONE
