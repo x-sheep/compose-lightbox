@@ -304,7 +304,7 @@ class LightboxState internal constructor() : Parcelable {
     }
 
     private suspend fun waitForTransformEnd(velocity: Velocity) {
-        val velocityOffset = Offset(velocity.x, velocity.y)
+        val velocityOffset = Offset(velocity.x, velocity.y) / max(1f, scale.targetValue)
         val targetPan = decaySpec.calculateTargetValue(
             Offset.VectorConverter,
             pan.targetValue,
