@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isFinite
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.unit.Density
@@ -114,6 +115,21 @@ class LightboxState internal constructor() : Parcelable {
     internal var decaySpec = splineBasedDecay<Offset>(Density(1f))
 
     internal val boxCenter get() = Offset(boxWidthPx.toFloat() / 2, boxHeightPx.toFloat() / 2)
+    internal val imageLimitsPx: Size get() {
+        val aspectRatio = photoList?.getOrNull(currentIndex)?.aspectRatio ?: 1f
+
+        val imageWidthPx: Float
+        val imageHeightPx: Float
+
+        if (aspectRatio >= boxWidthPx.toFloat() / boxHeightPx.toFloat()) {
+            imageWidthPx = boxWidthPx.toFloat()
+            imageHeightPx = imageWidthPx / aspectRatio
+        } else {
+            imageHeightPx = boxHeightPx.toFloat()
+            imageWidthPx = imageHeightPx * aspectRatio
+        }
+        return Size(imageWidthPx, imageHeightPx) / 2f
+    }
 
     /**
      * Open the Lightbox with a given photo.
@@ -251,8 +267,19 @@ class LightboxState internal constructor() : Parcelable {
                 hudVisible = true
 
             } else {
+                val imageLimitsPx = imageLimitsPx
+
+                dismissGestureProgress.snapTo(0f)
+                val limitX = imageLimitsPx.width
+                val limitY = imageLimitsPx.height
+
+                val targetPan = Offset(
+                    x = (boxCenter.x - offset.x).coerceIn(-limitX, limitX),
+                    y = (boxCenter.y - offset.y).coerceIn(-limitY, limitY),
+                )
+
                 launch { scale.animateTo(scale.targetValue * 4, tween(250)) }
-                launch { pan.animateTo(boxCenter - offset, tween(250)) }
+                launch { pan.animateTo(targetPan, tween(250)) }
                 isMinimalZoom = false
                 hudVisible = false
             }
@@ -326,7 +353,6 @@ class LightboxState internal constructor() : Parcelable {
 
         isMinimalZoom = scale.targetValue <= 1f
         val photoList = photoList ?: return
-        val aspectRatio = photoList[currentIndex].aspectRatio
         val toNext = motionState == Motion.CHANGE && targetPan.x < -boxWidthPx / 2 && hasNext
         val toPrevious = motionState == Motion.CHANGE && targetPan.x > boxWidthPx / 2 && hasPrevious
         if (toNext) {
@@ -341,20 +367,11 @@ class LightboxState internal constructor() : Parcelable {
                 hudVisible = true
             }
         } else {
-            val imageWidthPx: Float
-            val imageHeightPx: Float
-
-            if (aspectRatio >= boxWidthPx.toFloat() / boxHeightPx.toFloat()) {
-                imageWidthPx = boxWidthPx.toFloat()
-                imageHeightPx = imageWidthPx / aspectRatio
-            } else {
-                imageHeightPx = boxHeightPx.toFloat()
-                imageWidthPx = imageHeightPx * aspectRatio
-            }
+            val imageLimitsPx = imageLimitsPx
 
             dismissGestureProgress.snapTo(0f)
-            val limitX = imageWidthPx * 0.5f
-            val limitY = imageHeightPx * 0.5f
+            val limitX = imageLimitsPx.width
+            val limitY = imageLimitsPx.height
 
             pan.updateBounds(
                 Offset(-limitX, -limitY),
