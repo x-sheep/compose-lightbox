@@ -77,6 +77,7 @@ class LightboxState internal constructor() : Parcelable {
 
     /** The index of the photo currently being presented. */
     var currentIndex by mutableIntStateOf(0); internal set
+    private var targetIndex by mutableIntStateOf(0)
 
     /**
      * When a transition is in progress, this value is between the current index and the new index
@@ -103,10 +104,10 @@ class LightboxState internal constructor() : Parcelable {
     var hudVisible by mutableStateOf(true)
 
     /** True if the lightbox has more photos when going backwards. */
-    val hasPrevious get() = currentIndex > 0 && photoList != null
+    val hasPrevious get() = targetIndex > 0 && photoList != null
 
     /** True if the lightbox has more photos when going forwards. */
-    val hasNext get() = currentIndex + 1 < (photoList?.size ?: 0)
+    val hasNext get() = targetIndex + 1 < (photoList?.size ?: 0)
 
     internal var isMinimalZoom = true
     internal var boxWidthPx = 0
@@ -115,21 +116,22 @@ class LightboxState internal constructor() : Parcelable {
     internal var decaySpec = splineBasedDecay<Offset>(Density(1f))
 
     internal val boxCenter get() = Offset(boxWidthPx.toFloat() / 2, boxHeightPx.toFloat() / 2)
-    internal val imageLimitsPx: Size get() {
-        val aspectRatio = photoList?.getOrNull(currentIndex)?.aspectRatio ?: 1f
+    internal val imageLimitsPx: Size
+        get() {
+            val aspectRatio = photoList?.getOrNull(currentIndex)?.aspectRatio ?: 1f
 
-        val imageWidthPx: Float
-        val imageHeightPx: Float
+            val imageWidthPx: Float
+            val imageHeightPx: Float
 
-        if (aspectRatio >= boxWidthPx.toFloat() / boxHeightPx.toFloat()) {
-            imageWidthPx = boxWidthPx.toFloat()
-            imageHeightPx = imageWidthPx / aspectRatio
-        } else {
-            imageHeightPx = boxHeightPx.toFloat()
-            imageWidthPx = imageHeightPx * aspectRatio
+            if (aspectRatio >= boxWidthPx.toFloat() / boxHeightPx.toFloat()) {
+                imageWidthPx = boxWidthPx.toFloat()
+                imageHeightPx = imageWidthPx / aspectRatio
+            } else {
+                imageHeightPx = boxHeightPx.toFloat()
+                imageWidthPx = imageHeightPx * aspectRatio
+            }
+            return Size(imageWidthPx, imageHeightPx) / 2f
         }
-        return Size(imageWidthPx, imageHeightPx) / 2f
-    }
 
     /**
      * Open the Lightbox with a given photo.
@@ -138,38 +140,42 @@ class LightboxState internal constructor() : Parcelable {
      * @param sourceBounds The bounds of the originating image view, in absolute coordinates. May be null.
      */
     fun open(photo: PhotoItem, list: List<PhotoItem>, sourceBounds: Rect? = null) {
+        val index = list.indexOf(photo)
+        require(list.isEmpty() || index >= 0) { "photo must be contained inside list." }
+
+        targetIndex = max(0, index)
+        val newList = list.ifEmpty { listOf(photo) }
         scope?.launch {
-            openInternal(photo, list, sourceBounds)
+            openInternal(newList, sourceBounds)
         }
     }
 
     private suspend fun openInternal(
-        photo: PhotoItem,
         list: List<PhotoItem>,
-        sourceBounds: Rect?,
+        sourceBounds: Rect? = null,
         velocity: Velocity = Velocity.Zero
     ) {
-        val index = list.indexOf(photo)
-        require(list.isEmpty() || index >= 0) { "photo must be contained inside list." }
-
         dismissGestureProgress.snapTo(0f)
         closingProgress.snapTo(0f)
-        if (open && photoList === list && abs(currentIndex - index) == 1) {
+        if (open && photoList === list && abs(currentIndex - targetIndex) == 1) {
             motionState = Motion.CHANGE
-            coroutineScope {
-                // TODO the speed at which this scale/pan combo happens is pretty nauseating
-                launch { scale.animateTo(1f) }
-                launch {
-                    pan.animateTo(
-                        Offset((currentIndex - index) * boxWidthPx.toFloat(), 0f),
-                        initialVelocity = Offset(velocity.x, 0f)
-                    )
+            try {
+                coroutineScope {
+                    // TODO the speed at which this scale/pan combo happens is pretty nauseating
+                    launch { scale.animateTo(1f) }
+                    launch {
+                        pan.animateTo(
+                            Offset((currentIndex - targetIndex) * boxWidthPx.toFloat(), 0f),
+                            initialVelocity = Offset(velocity.x, 0f)
+                        )
+                    }
                 }
+            } finally {
+                currentIndex = targetIndex
+                isMinimalZoom = true
+                motionState = Motion.NONE
+                pan.snapTo(Offset.Zero)
             }
-            currentIndex = index
-            isMinimalZoom = true
-            motionState = Motion.NONE
-            pan.snapTo(Offset.Zero)
         } else {
 
             if (sourceBounds != null) {
@@ -186,8 +192,8 @@ class LightboxState internal constructor() : Parcelable {
                 scale.snapTo(1f)
                 pan.snapTo(Offset.Zero)
             }
-            photoList = list.ifEmpty { listOf(photo) }
-            currentIndex = if (list.isEmpty()) 0 else index
+            photoList = list
+            currentIndex = targetIndex
             isMinimalZoom = true
             motionState = Motion.NONE
             open = true
@@ -232,10 +238,15 @@ class LightboxState internal constructor() : Parcelable {
      * If `hasPrevious` is false, this function does nothing.
      */
     fun goPrevious() {
+        val scope = scope ?: return
         val list = photoList ?: return
-        if (!hasPrevious) return
+        scope.launch {
+            pan.snapTo(pan.targetValue)
+            if (!hasPrevious) return@launch
 
-        open(list[currentIndex - 1], list)
+            targetIndex -= 1
+            openInternal(list)
+        }
     }
 
     /**
@@ -244,10 +255,15 @@ class LightboxState internal constructor() : Parcelable {
      * If `hasNext` is false, this function does nothing.
      */
     fun goNext() {
+        val scope = scope ?: return
         val list = photoList ?: return
-        if (!hasNext) return
+        scope.launch {
+            pan.snapTo(pan.targetValue)
+            if (!hasNext) return@launch
 
-        open(list[currentIndex + 1], list)
+            targetIndex += 1
+            openInternal(list)
+        }
     }
 
     internal var transformState: TransformableState? = null
@@ -356,9 +372,11 @@ class LightboxState internal constructor() : Parcelable {
         val toNext = motionState == Motion.CHANGE && targetPan.x < -boxWidthPx / 2 && hasNext
         val toPrevious = motionState == Motion.CHANGE && targetPan.x > boxWidthPx / 2 && hasPrevious
         if (toNext) {
-            openInternal(photoList[currentIndex + 1], photoList, null, velocity)
+            targetIndex += 1
+            openInternal(photoList, null, velocity)
         } else if (toPrevious) {
-            openInternal(photoList[currentIndex - 1], photoList, null, velocity)
+            targetIndex -= 1
+            openInternal(photoList, null, velocity)
         } else if (isMinimalZoom) {
             coroutineScope {
                 launch { scale.animateTo(1f) }
@@ -400,7 +418,7 @@ class LightboxState internal constructor() : Parcelable {
 
     /** @see Parcelable */
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        val current = if (open) currentIndex else -1
+        val current = if (open) targetIndex else -1
         dest.writeInt(current)
         if (current >= 0) {
             dest.writeList(photoList.orEmpty())
@@ -418,6 +436,7 @@ class LightboxState internal constructor() : Parcelable {
 
                 ret.photoList = source.createTypedArrayList(PhotoItem.CREATOR)
                 ret.currentIndex = current
+                ret.targetIndex = current
                 ret.open = true
                 return ret
             }
