@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -38,6 +39,9 @@ import androidx.compose.ui.unit.dp
 fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
     CompositionLocalProvider(LocalContentColor provides Color.White) {
         val dir = LocalLayoutDirection.current
+        val colors = IconButtonDefaults.iconButtonColors().copy(
+            containerColor = Color(0, 0, 0, 0x20),
+        )
 
         AnimatedVisibility(
             state.hudVisible && state.open,
@@ -51,7 +55,8 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                     }, Modifier
                         .align(Alignment.TopStart)
                         .padding(padding)
-                        .padding(start = 4.dp, top = 4.dp)
+                        .padding(start = 4.dp, top = 4.dp),
+                    colors = colors
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.close),
@@ -70,7 +75,9 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                             .align(Alignment.CenterStart)
                             .padding(
                                 start = padding.calculateStartPadding(dir)
-                            ).padding(start = 4.dp)
+                            )
+                            .padding(start = 4.dp),
+                        colors = colors
                     ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.backward),
@@ -88,7 +95,9 @@ fun LightboxOverlay(state: LightboxState, padding: PaddingValues) {
                             .align(Alignment.CenterEnd)
                             .padding(
                                 end = padding.calculateEndPadding(dir)
-                            ).padding(end = 4.dp)
+                            )
+                            .padding(end = 4.dp),
+                        colors = colors
                     ) {
                         Icon(
                             ImageVector.vectorResource(R.drawable.forward),
