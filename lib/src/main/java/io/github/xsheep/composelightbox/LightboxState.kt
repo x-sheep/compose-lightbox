@@ -157,6 +157,7 @@ class LightboxState internal constructor() : Parcelable {
     ) {
         dismissGestureProgress.snapTo(0f)
         closingProgress.snapTo(0f)
+        isMinimalZoom = true
         if (open && photoList === list && abs(currentIndex - targetIndex) == 1) {
             motionState = Motion.CHANGE
             try {
@@ -172,7 +173,6 @@ class LightboxState internal constructor() : Parcelable {
                 }
             } finally {
                 currentIndex = targetIndex
-                isMinimalZoom = true
                 motionState = Motion.NONE
                 pan.snapTo(Offset.Zero)
             }
@@ -194,7 +194,6 @@ class LightboxState internal constructor() : Parcelable {
             }
             photoList = list
             currentIndex = targetIndex
-            isMinimalZoom = true
             motionState = Motion.NONE
             open = true
 
