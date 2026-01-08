@@ -93,7 +93,7 @@ class LightboxState internal constructor() : Parcelable {
 
     internal val isOverscrolling: Boolean
         get() {
-            if (motionState != Motion.CHANGE) return false
+            if (motionState != Motion.CHANGE || currentIndex != targetIndex) return false
             return (!hasPrevious && pan.value.x > 0) || (!hasNext && pan.value.x < 0)
         }
 
