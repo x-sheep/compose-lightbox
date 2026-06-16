@@ -65,9 +65,10 @@ import kotlin.math.sqrt
 @Composable
 fun LightboxHost(
     state: LightboxState = rememberLightboxState(),
+    hideSystemUI: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    LightboxHost(state, true, DefaultLightboxOverlay, content)
+    LightboxHost(state, hideSystemUI, DefaultLightboxOverlay, content)
 }
 
 /**
