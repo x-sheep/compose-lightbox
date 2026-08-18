@@ -11,21 +11,11 @@ Platforms other than Android are currently not supported.
 
 ## Installation
 
-Make sure Jitpack is added to the list of package repositories in `settings.gradle`.
-```groovy
-dependencyResolutionManagement {
-  repositories {
-    ... // other repositories
-    maven { url 'https://jitpack.io' }
-  }
-}
-```
-
-Then add the dependency to the `build.gradle` of your app:
+Add the dependency to the `build.gradle` of your app:
 ```groovy
 dependencies {
   ... // other dependencies
-  implementation 'com.github.x-sheep:compose-lightbox:0.1.5'
+  implementation 'io.github.x-sheep:compose-lightbox:1.0.0'
 }
 ```
 
@@ -66,4 +56,4 @@ Scaffold(contentWindowInsets = WindowInsets.mandatorySystemGestures.union(Window
 
 # License
 
-Copyright (c) 2025 Lennard Sprong. [MIT License](./LICENSE)
+Copyright (c) 2025-2026 Lennard Sprong. [MIT License](./LICENSE)
