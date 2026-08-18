@@ -1,0 +1,62 @@
+package io.github.xsheep.composelightbox
+
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.findRootCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import coil3.compose.AsyncImage
+
+/**
+ * An image that opens the Lightbox when pressed.
+ *
+ * These images can be used anywhere in your UI.
+ *
+ * This composable must have LightboxHost as a parent.
+ *
+ * @sample io.github.xsheep.composelightbox.snippets.Gallery
+ *
+ * @param photoList The list of photos to present when pressed. May be empty.
+ * @param photo The photo being displayed by this image. This must be a member of `photoList` if the list is not empty.
+ * @param enabled True if the Lightbox can be opened by pressing this view.
+ */
+@Composable
+fun LightboxImage(
+    photoList: List<PhotoItem>,
+    photo: PhotoItem,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+    enabled: Boolean = true,
+) {
+    val host = LocalLightboxHost.current
+    val dir = LocalLayoutDirection.current
+
+    var bounds by remember { mutableStateOf(Rect(Offset.Unspecified, Float.NaN)) }
+
+    AsyncImage(
+        photo.thumbnail ?: photo.url,
+        photo.contentDescription,
+        modifier
+            .clickable(enabled) {
+                host.open(photo, photoList, bounds.takeIf { it.isFinite })
+            }
+            .onGloballyPositioned {
+                val box = it.boundsInWindow()
+                bounds = if (dir == LayoutDirection.Rtl) {
+                    val rootWidth = it.findRootCoordinates().size.width
+                    box.copy(left = rootWidth - box.right, right = rootWidth - box.left)
+                } else box
+            },
+        contentScale = contentScale,
+    )
+}

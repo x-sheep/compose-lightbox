@@ -1,0 +1,80 @@
+package io.github.xsheep.composelightbox.sample
+
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.mandatorySystemGestures
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import io.github.xsheep.composelightbox.LightboxHost
+import io.github.xsheep.composelightbox.LightboxImage
+import io.github.xsheep.composelightbox.PhotoItem
+
+@Composable
+@Preview
+fun App() {
+    val colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+
+    MaterialTheme(colorScheme) {
+        LightboxHost {
+            val insets =
+                WindowInsets.mandatorySystemGestures.union(WindowInsets.displayCutout)
+            Scaffold(
+                contentWindowInsets = insets,
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text("Compose Lightbox sample")
+                        },
+                        windowInsets = insets.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                    )
+                }
+            ) { padding ->
+                val photoList = remember {
+                    (10 until 30).map {
+                        PhotoItem(
+                            "https://picsum.photos/id/$it/1200/900",
+                            "Photo ${it - 9}",
+                            "https://picsum.photos/id/$it/400/300"
+                        )
+                    }
+                }
+
+                LazyVerticalGrid(
+                    GridCells.Fixed(2),
+                    contentPadding = padding,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(photoList) {
+                        LightboxImage(
+                            photoList, it, Modifier
+                                .width(300.dp)
+                                .height(200.dp),
+                            ContentScale.Crop
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

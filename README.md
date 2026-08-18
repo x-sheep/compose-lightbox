@@ -6,19 +6,20 @@ https://github.com/user-attachments/assets/247b350f-be37-4e02-bbbc-dad781d624bb
 
 ## Requirements
 
-* Android SDK level 16+
-* Jetpack Compose version 2025.11.00 or higher
+* For Android: SDK level 23+
+* Compose Multiplatform 1.11 or higher
 
-Platforms other than Android are currently not supported.
+This library currently supports Android and iOS. For older Android phones, use version [1.x](https://github.com/x-sheep/compose-lightbox/tree/1.x) without Multiplatform support.
 
 ## Installation
 
-Add the dependency to the `build.gradle` of your app:
-```groovy
-dependencies {
-  ... // other dependencies
-  implementation 'io.github.x-sheep:compose-lightbox:1.0.0'
-}
+This library depends on [Coil 3](https://github.com/coil-kt/coil) for image loading and display. Follow the Quick Start instructions to connect it a networking library like Ktor or OkHttp.
+
+Once a regular `AsyncImage()` loads successfully in your app, you can integrate ComposeLightbox.
+
+Add the ComposeLightbox dependency to the `build.gradle` of your app:
+```kotlin
+implementation("io.github.x-sheep:compose-lightbox:2.0.0")
 ```
 
 ## Usage
