@@ -2,6 +2,8 @@
 
 An implementation of a Lightbox for Jetpack Compose. Press an image anywhere in your layout to open a gallery of images.
 
+https://github.com/user-attachments/assets/247b350f-be37-4e02-bbbc-dad781d624bb
+
 ## Requirements
 
 * Android SDK level 16+
