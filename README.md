@@ -1,8 +1,12 @@
 # ComposeLightbox
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.x-sheep/compose-lightbox.svg?label=Maven%20Central)](https://search.maven.org/artifact/io.github.x-sheep/compose-lightbox)
+![Supported Platforms](https://img.shields.io/badge/platform-Android-green.svg)
+![Supported Platforms](https://img.shields.io/badge/platform-iOS-blue.svg)
+
 An implementation of a Lightbox for Jetpack Compose. Press an image anywhere in your layout to open a gallery of images.
 
-https://github.com/user-attachments/assets/247b350f-be37-4e02-bbbc-dad781d624bb
+[Watch a demo video](https://github.com/user-attachments/assets/247b350f-be37-4e02-bbbc-dad781d624bb)
 
 ## Requirements
 
