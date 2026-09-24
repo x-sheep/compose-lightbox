@@ -11,7 +11,7 @@ android-activity = "1.11.0"
 android-core = "1.17.0"
 appcompat = "1.7.1"
 coil = "3.5.0"
-ktor = "3.5.2"
+ktor = "3.6.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity" }
