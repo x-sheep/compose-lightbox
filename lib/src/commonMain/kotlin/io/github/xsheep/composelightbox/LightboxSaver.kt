@@ -13,6 +13,7 @@ import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object LightboxSaver : Saver<LightboxState, SavedState> {
     override fun restore(value: SavedState): LightboxState {
@@ -37,10 +38,12 @@ object LightboxStateSerializer : KSerializer<LightboxState> {
         encoder: Encoder,
         value: LightboxState
     ) {
-        val current = if (value.open) value.targetIndex else -1
-        encoder.encodeInt(current)
-        if (current >= 0) {
-            encoder.encodeSerializableValue(itemSerializer, value.photoList.orEmpty())
+        encoder.encodeStructure(descriptor) {
+            val current = if (value.open) value.targetIndex else -1
+            encodeIntElement(descriptor, 0, current)
+            if (current >= 0) {
+                encodeSerializableElement(descriptor, 1, itemSerializer, value.photoList.orEmpty())
+            }
         }
     }
 
