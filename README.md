@@ -23,7 +23,7 @@ Once a regular `AsyncImage()` loads successfully in your app, you can integrate 
 
 Add the ComposeLightbox dependency to the `build.gradle` of your app:
 ```kotlin
-implementation("io.github.x-sheep:compose-lightbox:2.0.0")
+implementation("io.github.x-sheep:compose-lightbox:2.0.1")
 ```
 
 ## Usage
