@@ -1,17 +1,17 @@
 [versions]
-agp = "9.3.1"
-kotlin = "2.4.10"
+agp = "9.4.1"
+kotlin = "2.4.20"
 android-minSdk = "23"
 android-compileSdk = "37"
 serialization = "1.11.0"
 material3 = "1.11.0-alpha07"
-composeMultiplatform = "1.11.1"
-vanniktechMavenPublish = "0.36.0"
-android-activity = "1.11.0"
-android-core = "1.17.0"
-appcompat = "1.7.1"
-coil = "3.5.0"
-ktor = "3.5.2"
+composeMultiplatform = "1.12.1"
+mavenPublish = "0.37.0"
+android-activity = "1.13.0"
+android-core = "1.19.1"
+appcompat = "1.8.0"
+coil = "3.6.3"
+ktor = "3.6.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity" }
@@ -36,7 +36,7 @@ androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechMavenPublish" }
+vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
