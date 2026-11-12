@@ -64,3 +64,5 @@ Scaffold(contentWindowInsets = WindowInsets.mandatorySystemGestures.union(Window
 # License
 
 Copyright (c) 2025-2026 Lennard Sprong. [MIT License](./LICENSE)
+
+No AI was used in the development of this project.
